@@ -9,12 +9,14 @@ class ClearUpAnalyzer:
         nltk.download('wordnet')
 
 
-    def __call__(self, text):
+    def __call__(self, text, useLemmatize = True):
         nopunct_text = self.remove_punct(text)
         tokenized_text = self.tokenize(nopunct_text.lower())
         nostop_text = self.remove_stop_words(tokenized_text)
-        #data = data.apply(lambda x: self.stemming(x))
-        clean_text = self.lemmatizing(nostop_text)
+        if useLemmatize:
+            clean_text = self.lemmatizing(nostop_text)
+        else:
+            clean_text = self.stemming(nostop_text)
         return clean_text
 
 
