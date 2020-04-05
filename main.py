@@ -5,9 +5,11 @@ from urllib import parse
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
+import sys
 
 pd.set_option('display.max_columns', 30)
 pd.set_option('display.max_rows', 30)
+np.set_printoptions(threshold=sys.maxsize)
 
 # Load the dataset
 train_df = pd.read_csv("dataset/train.csv")
@@ -21,10 +23,14 @@ my_analyzer = analyzeData.ClearUpAnalyzer()
 train_df['keyword_clear'] = train_df['keyword'].apply(lambda x: my_analyzer(parse.unquote(x), False))
 
 keywords = []
-for words in train_df['keyword_clear']:
-    for word in words:
-            if word not in keywords and word != '':
-                 keywords.append(word)
+
+def extractUniqueWords(tokenizedKeyWord, uniqueTokenizedKeyWord):
+    for word in tokenizedKeyWord:
+        if word not in uniqueTokenizedKeyWord and word != '':
+            uniqueTokenizedKeyWord.append(word)
+
+train_df['keyword_clear'].apply(lambda x: extractUniqueWords(x, keywords))
+
 def checkKeywords(words, keyword):
     for word in words:
         if word == keyword:
@@ -43,6 +49,7 @@ X_tfidf = tf.fit_transform(train_df['text'])
 newFeachuredVector = np.append(keywordsIndicator, X_tfidf.todense(), axis=1)
 print(newFeachuredVector.shape)
 
+# Create model
 rf = RandomForestClassifier()
 params = {
     'n_estimators': [10, 150, 300],
