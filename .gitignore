@@ -1,4 +1,4 @@
 .idea/*
 .ipynb_checkpoints/*
 __pycache__/*
-dataset/GoogleNews-vectors-negative300.bin
+dataset/GoogleNews-vectors-negative300.bin.gz
